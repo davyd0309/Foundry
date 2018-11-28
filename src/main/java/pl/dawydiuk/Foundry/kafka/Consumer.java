@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Consumer {
 
-    @KafkaListener(topics = "${app.topic.foo}")
+    @KafkaListener(topics = "${app.topic.mass}")
     public void listen(@Payload String message) {
         log.info("received message='{}'", message);
      }

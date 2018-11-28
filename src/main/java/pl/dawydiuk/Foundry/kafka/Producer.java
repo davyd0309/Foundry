@@ -15,7 +15,7 @@ public class Producer {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    @Value("${app.topic.someTopic}")
+    @Value("${app.topic.foundry}")
     private String topic;
 
     public void send(String message) {
