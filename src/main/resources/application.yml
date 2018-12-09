@@ -4,8 +4,8 @@ spring:
 
 app:
   topic:
-    mass: mass
-    foundry: foundry
+    orders-to-be-completed: orders-to-be-completed
+    orders-completed-foundry: orders-completed-foundry
 
 #logging:
 #  level:
