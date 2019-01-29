@@ -1,29 +1,30 @@
 package pl.dawydiuk.Foundry;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import pl.dawydiuk.Foundry.kafka.Producer;
-
 @SpringBootApplication
-public class FoundryApplication implements CommandLineRunner {
+public class FoundryApplication
+//		implements CommandLineRunner
+{
 
-	private final Producer producer;
-
-	@Autowired
-	public FoundryApplication(Producer producer) {
-		this.producer = producer;
-	}
+//	private final ProductProducer productProducer;
+//
+//	@Autowired
+//	public FoundryApplication(ProductProducer productProducer) {
+//		this.productProducer = productProducer;
+//	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(FoundryApplication.class, args);
 	}
 
-	@Override
-	public void run(String... strings) throws Exception {
-		producer.send("Message from FoundryApplication");
-	}
+//	@Override
+//	public void run(String... strings) throws Exception {
+//		Scanner reader = new Scanner(System.in);
+//		if(reader.next().equals("send")){
+//			productProducer.sendProduct();
+//		}
+//	}
 
 }

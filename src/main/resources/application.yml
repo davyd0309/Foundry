@@ -4,8 +4,12 @@ spring:
 
 app:
   topic:
-    orders-to-be-completed: orders-to-be-completed
-    orders-completed-foundry: orders-completed-foundry
+    orders-from-foundry: orders-from-foundry
+    foundry-product-produced: foundry-product-produced
+    mass-to-foundry: mass-to-foundry
+
+server:
+  port: 8081
 
 #logging:
 #  level:
