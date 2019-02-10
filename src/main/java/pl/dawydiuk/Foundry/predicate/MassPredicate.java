@@ -1,6 +1,7 @@
 package pl.dawydiuk.Foundry.predicate;
 
-import pl.dawydiuk.ConversionOfMass.model.Mass;
+
+import models.Mass;
 
 import java.util.function.Predicate;
 

@@ -1,21 +1,25 @@
 package pl.dawydiuk.Foundry.service;
 
 import lombok.extern.slf4j.Slf4j;
+import models.Mass;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
-import pl.dawydiuk.ConversionOfMass.model.Mass;
-import pl.dawydiuk.Foundry.storage.Storage;
+
+import static pl.dawydiuk.Foundry.storage.Storage.MASS;
 
 
 @Service
 @Slf4j
 public class MassConsumer {
 
-    @KafkaListener(topics = "${app.topic.mass-to-foundry}")
+    private static final String MASS_FROM_CONVERSION_OF_MASS_TOPIC = "${app.topic.mass-to-foundry}";
+
+    @KafkaListener(topics = MASS_FROM_CONVERSION_OF_MASS_TOPIC)
     public void getMass(@Payload Mass mass) {
-        log.info("received mass from topic mass ='{}'", mass.getId());
-        Storage.mass = mass;
+        log.info("Received mass from topic='{}' massId ='{}'",MASS_FROM_CONVERSION_OF_MASS_TOPIC, mass.getId());
+        MASS = mass;
     }
+
 
 }

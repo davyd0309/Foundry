@@ -2,6 +2,7 @@ package pl.dawydiuk.Foundry.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import pl.dawydiuk.Foundry.service.ProductProducer;
 
@@ -19,9 +20,9 @@ public class MainController {
         this.productProducer = productProducer;
     }
 
-    @GetMapping(value = "/start")
-    public void production() {
-        productProducer.sendProduct();
+    @GetMapping(value = "/start/{products}")
+    public void production(@PathVariable int howManyProducts) {
+        productProducer.createProduct(howManyProducts);
     }
 
 }

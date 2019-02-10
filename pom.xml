@@ -68,7 +68,7 @@
         <!--Service-->
         <dependency>
             <groupId>pl.dawydiuk</groupId>
-            <artifactId>ConversionOfMass</artifactId>
+            <artifactId>FactoryApi</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
