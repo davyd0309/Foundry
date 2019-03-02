@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 import static pl.dawydiuk.Foundry.predicate.MassPredicate.isEnoughInStorage;
 import static pl.dawydiuk.Foundry.storage.Storage.MASS;
+import static pl.dawydiuk.Foundry.storage.Storage.PRODUCTS_TO_BE_MADE;
 
 
 @Service
@@ -25,14 +26,18 @@ public class ProductProducer {
     }
 
     public void createProduct(int howManyProducts) {
-        for (int i = 0; i < howManyProducts; i++) {
-            int productId = 0;
-            if (isEnoughInStorage().test(MASS)) {
-                createProductProducer.accept(createNewProduct(productId));
-                productId++;
-            }else {
-                orderProducer.accept("Not enough mass");
-            }
+        if (!isEnoughInStorage().test(MASS)) {
+            orderProducer.accept("Not enough mass");
+        } else {
+            createNewProducts(howManyProducts);
+        }
+
+    }
+
+    private void createNewProducts(int howManyProducts) {
+        for (int productId = 0; productId < howManyProducts; productId++) {
+            createProductProducer.accept(createNewProduct(productId));
+            PRODUCTS_TO_BE_MADE = PRODUCTS_TO_BE_MADE - 1;
         }
     }
 

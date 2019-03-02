@@ -10,6 +10,5 @@ public class Storage {
 
     public static Mass MASS = Mass.builder().weight(0).build();
 
-
-
+    public static int PRODUCTS_TO_BE_MADE = 0;
 }

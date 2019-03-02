@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
 
-import static pl.dawydiuk.Foundry.storage.Storage.MASS;
-
 /**
  * Created by Judith on 02.02.2019.
  */
@@ -34,7 +32,7 @@ public class CreateProductProducer implements Consumer<Product> {
     }
 
     private void reducingTheWeightNeededToMakeOneProduct() {
-        MASS.setWeight(MASS.getWeight() - 15);
+        //redukcja masy
     }
 
 

@@ -1,6 +1,7 @@
 package pl.dawydiuk.Foundry.service;
 
-import org.junit.jupiter.api.Test;
+
+import org.junit.Test;
 
 /**
  * Created by Judith on 26.12.2018.
