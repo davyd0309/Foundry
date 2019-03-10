@@ -1,10 +1,10 @@
 package pl.dawydiuk.Foundry.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import pl.dawydiuk.Foundry.service.ProductProducer;
+import pl.dawydiuk.Foundry.service.ProductReducer;
 
 import static pl.dawydiuk.Foundry.storage.Storage.PRODUCTS_TO_BE_MADE;
 
@@ -16,15 +16,16 @@ import static pl.dawydiuk.Foundry.storage.Storage.PRODUCTS_TO_BE_MADE;
 public class MainController {
 
     private ProductProducer productProducer;
+    private ProductReducer productReducer;
 
-    @Autowired
-    public MainController(ProductProducer productProducer) {
+    public MainController(ProductProducer productProducer, ProductReducer productReducer) {
         this.productProducer = productProducer;
+        this.productReducer = productReducer;
     }
 
     @GetMapping(value = "/start/{howManyProducts}")
     public void production(@PathVariable int howManyNewProducts) {
-        PRODUCTS_TO_BE_MADE = PRODUCTS_TO_BE_MADE + howManyNewProducts;
+        productReducer.addProductToBeMade(howManyNewProducts);
         productProducer.createProduct(PRODUCTS_TO_BE_MADE);
     }
 

@@ -1,34 +1,60 @@
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
-  h2:
-    console:
-      enabled: true
-      path: /base
-#  datasource:
-#    url: jdbc:h2:file:~/test
-#    username: sa
-#    password:
-#    driver-class-name: org.h2.Driver
-#  jpa:
-#    hibernate:
-#      ddl-auto: create
-#      naming:
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-#    database-platform: H2
+    bootstrap-servers: ${KAFKA_SERVERS}
+    properties:
+      username: ${KAFKA_USERNAME}
+      password: ${KAFKA_PASSWORD}
+      security:
+        protocol: SASL_SSL
+    sasl:
+      mechanism: SCRAM-SHA-256
 
 app:
   topic:
-    orders-from-foundry: orders-from-foundry
-    foundry-product-produced: foundry-product-produced
-    mass-to-foundry: mass-to-foundry
+    orders-from-foundry: 82jesyk2-orders-from-foundry82jesyk2-orders-from-foundry
+    foundry-product-produced: 82jesyk2-foundry-product-produced
+    mass-to-foundry: 82jesyk2-mass-to-foundry
 
 server:
   port: 8081
-
+debug: false
 #logging:
 #  level:
 #    root: ERROR
 #    org.springframework.web: ERROR
 #    com.memorynotfound: DEBUG
+
+---
+spring:
+  profiles: h2
+  h2:
+    console:
+      enabled: true
+      path: /base
+
+datebase: H2
+
+datasource:
+  url: jdbc:h2:mem:dev;DB_CLOSE_ON_EXIT=FALSE
+  username: konrad
+  password:
+  driver-class-name: org.h2.Driver
+
+hibernate:
+  dialect: org.hibernate.dialect.H2Dialect
+
+---
+spring:
+  profiles: dev
+
+datebase: MYSQL
+
+datasource:
+  url: ${DATABASE_URL}
+  username: ${DATABASE_USERNAME}
+  password: ${DATABASE_PASSWORD}
+  driver-class-name: com.mysql.jdbc.Driver
+
+hibernate:
+  dialect: org.hibernate.dialect.MySQL5Dialect
 

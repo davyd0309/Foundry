@@ -28,12 +28,9 @@ public class CreateProductProducer implements Consumer<Product> {
     public void accept(Product product) {
         kafkaTemplateProduct.send(topic, product);
         log.info("Sending product o id='{}' to topic='{}'", product.getId(),topic);
-        reducingTheWeightNeededToMakeOneProduct();
+
     }
 
-    private void reducingTheWeightNeededToMakeOneProduct() {
-        //redukcja masy
-    }
 
 
 }

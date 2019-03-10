@@ -18,13 +18,13 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class MassDaoImpl {
+public class MassDao {
 
 
     private final SessionFactory sessionFactory;
 
     @Autowired
-    public MassDaoImpl(SessionFactory sessionFactory) {
+    public MassDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -38,4 +38,6 @@ public class MassDaoImpl {
         Query<Mass> query1 = sessionFactory.getCurrentSession().createQuery(query);
         return query1.getResultList();
     }
+
+
 }

@@ -2,14 +2,12 @@ package pl.dawydiuk.Foundry.service;
 
 import lombok.extern.slf4j.Slf4j;
 import models.Product;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
+import pl.dawydiuk.Foundry.builder.ProductBuilder;
+import pl.dawydiuk.Foundry.repository.ProductDao;
 
 import static pl.dawydiuk.Foundry.predicate.MassPredicate.isEnoughInStorage;
 import static pl.dawydiuk.Foundry.storage.Storage.MASS;
-import static pl.dawydiuk.Foundry.storage.Storage.PRODUCTS_TO_BE_MADE;
 
 
 @Service
@@ -18,34 +16,31 @@ public class ProductProducer {
 
     private final OrderProducer orderProducer;
     private final CreateProductProducer createProductProducer;
+    private final ProductBuilder productBuilder;
+    private ProductReducer productReducer;
+    private ProductDao productDao;
 
-    @Autowired
-    public ProductProducer(OrderProducer orderProducer, CreateProductProducer createProductProducer) {
+    public ProductProducer(OrderProducer orderProducer, CreateProductProducer createProductProducer, ProductBuilder productBuilder, ProductReducer productReducer, ProductDao productDao) {
         this.orderProducer = orderProducer;
         this.createProductProducer = createProductProducer;
+        this.productBuilder = productBuilder;
+        this.productReducer = productReducer;
+        this.productDao = productDao;
     }
 
-    public void createProduct(int howManyProducts) {
+    public void createProduct(final int howManyProducts) {
+
         if (!isEnoughInStorage().test(MASS)) {
             orderProducer.accept("Not enough mass");
         } else {
-            createNewProducts(howManyProducts);
+            for (int productId = 0; productId < howManyProducts; productId++) {
+                Product newProduct = productBuilder.createNewProduct();
+                createProductProducer.accept(newProduct);
+                productDao.persist(newProduct);
+                productReducer.reduceProductToBeMade();
+            }
         }
 
-    }
-
-    private void createNewProducts(int howManyProducts) {
-        for (int productId = 0; productId < howManyProducts; productId++) {
-            createProductProducer.accept(createNewProduct(productId));
-            PRODUCTS_TO_BE_MADE = PRODUCTS_TO_BE_MADE - 1;
-        }
-    }
-
-    private Product createNewProduct(int productId) {
-        return Product.builder()
-                .id(productId)
-                .foundryDate(LocalDateTime.now())
-                .build();
     }
 
 

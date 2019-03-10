@@ -23,7 +23,6 @@ public class OrderProducer implements Consumer<String> {
         this.kafkaTemplateString = kafkaTemplateString;
     }
 
-
     @Override
     public void accept(String information) {
         log.info("Send order to topic='{}' info='{}'", topic, information);
