@@ -23,7 +23,7 @@ public class MainController {
         this.productReducer = productReducer;
     }
 
-    @GetMapping(value = "/start/{howManyProducts}")
+    @GetMapping(value = "/create/{howManyProducts}")
     public void production(@PathVariable int howManyNewProducts) {
         productReducer.addProductToBeMade(howManyNewProducts);
         productProducer.createProduct(PRODUCTS_TO_BE_MADE);
