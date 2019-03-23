@@ -83,8 +83,9 @@ public class ComponentConfig {
     @Bean
     public ProductProducer productProducer(OrderProducer orderProducer,
                                            ProductBuilder productBuilder,
-                                           CreateProductStrategy createProductStrategy){
-        return new ProductProducer(orderProducer,productBuilder,createProductStrategy);
+                                           CreateProductStrategy createProductStrategy,
+                                           ProductSynchronizationConsumer productSynchronizationConsumer){
+        return new ProductProducer(orderProducer,productBuilder,createProductStrategy,productSynchronizationConsumer);
     }
 
 }
