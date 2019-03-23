@@ -1,13 +1,13 @@
 package pl.dawydiuk.Foundry.service;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.Mass;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Service;
 
 
-@Service
+@NoArgsConstructor
 @Slf4j
 public class MassConsumer {
 

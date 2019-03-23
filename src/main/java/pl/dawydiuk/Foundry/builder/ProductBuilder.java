@@ -1,7 +1,8 @@
 package pl.dawydiuk.Foundry.builder;
 
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import models.Product;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +10,9 @@ import java.time.LocalDateTime;
  * Created by Judith on 09.03.2019.
  */
 
-@Component
+
+@NoArgsConstructor
+@Slf4j
 public class ProductBuilder {
 
     public Product createNewProduct() {

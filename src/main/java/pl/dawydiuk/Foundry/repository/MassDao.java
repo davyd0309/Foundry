@@ -1,10 +1,10 @@
 package pl.dawydiuk.Foundry.repository;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import models.Mass;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,17 +16,13 @@ import java.util.List;
  * Created by Judith on 25.02.2019.
  */
 
-@Repository
+
+@AllArgsConstructor
 @Transactional
+@Slf4j
 public class MassDao {
 
-
     private final SessionFactory sessionFactory;
-
-    @Autowired
-    public MassDao(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
 
     public List<Mass> getAllMass() {
         CriteriaBuilder criteriaBuilder = sessionFactory.getCriteriaBuilder();
