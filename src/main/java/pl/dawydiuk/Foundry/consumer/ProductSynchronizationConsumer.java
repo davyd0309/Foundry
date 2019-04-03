@@ -2,10 +2,10 @@ package pl.dawydiuk.Foundry.consumer;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import models.Product;
 
-import java.util.function.IntConsumer;
-
-import static pl.dawydiuk.Foundry.storage.Storage.PRODUCTS_TO_BE_MADE;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by Judith on 21.03.2019.
@@ -13,10 +13,11 @@ import static pl.dawydiuk.Foundry.storage.Storage.PRODUCTS_TO_BE_MADE;
 
 @NoArgsConstructor
 @Slf4j
-public class ProductSynchronizationConsumer implements IntConsumer {
+public class ProductSynchronizationConsumer implements Function<List<Product>,List<Product>> {
 
     @Override
-    public void accept(int howManyNewProducts) {
-        PRODUCTS_TO_BE_MADE = PRODUCTS_TO_BE_MADE + howManyNewProducts;
+    public List<Product> apply(List<Product> productList) {
+        //uderza do bazy i sprawdza co zostalo z zapasow do zrobienia i dodaje to co trzeba zrobić
+        return null;
     }
 }

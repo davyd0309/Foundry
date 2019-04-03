@@ -6,9 +6,11 @@ import models.Product;
 import pl.dawydiuk.Foundry.builder.ProductBuilder;
 import pl.dawydiuk.Foundry.consumer.CreateProductStrategy;
 import pl.dawydiuk.Foundry.consumer.ProductSynchronizationConsumer;
+import pl.dawydiuk.Foundry.predicate.MassPredicate;
 
-import static pl.dawydiuk.Foundry.predicate.MassPredicate.isEnoughInStorage;
-import static pl.dawydiuk.Foundry.storage.Storage.MASS;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -19,18 +21,26 @@ public class ProductProducer {
     private final ProductBuilder productBuilder;
     private final CreateProductStrategy createProductStrategy;
     private final ProductSynchronizationConsumer productSynchronizationConsumer;
+    private final MassPredicate massPredicate;
 
-    public void createProduct(final int howManyNewProducts) {
-        synchronizationProductsToBeMade(howManyNewProducts);
-        if (!isEnoughInStorage().test(MASS)) {
-            sendMessageMassAbsence();
-        } else {
-            for (int productId = 0; productId < howManyNewProducts; productId++) {
-                Product newProduct = productBuilder.createNewProduct();
-                startProduction(newProduct);
+    public void createProduct(final List<Product> newProductList) {
+        final List<Product> productList = Optional.ofNullable(newProductList).orElse(new ArrayList<Product>());
+        if(!productList.isEmpty()){
+            List<Product> productsToBeMade = synchronizationProductsToBeMade(productList);
+            if (isNotEnoughInStorage(productsToBeMade)) {
+                sendMessageMassAbsence();
+            } else {
+                for (int productId = 0; productId < productsToBeMade.size(); productId++) {
+                    Product newProduct = productBuilder.createNewProduct();
+                    startProduction(newProduct);
+                }
             }
         }
 
+    }
+
+    private boolean isNotEnoughInStorage(List<Product> productsToBeMade) {
+        return massPredicate.test(productsToBeMade);
     }
 
     private void startProduction(Product newProduct) {
@@ -41,7 +51,7 @@ public class ProductProducer {
         orderProducer.accept("Not enough mass");
     }
 
-    private void synchronizationProductsToBeMade(int howManyNewProducts) {
-        productSynchronizationConsumer.accept(howManyNewProducts);
+    private List<Product> synchronizationProductsToBeMade(List<Product> productList) {
+        return productSynchronizationConsumer.apply(productList);
     }
 }

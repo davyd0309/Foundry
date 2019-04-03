@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
 import pl.dawydiuk.Foundry.builder.ProductBuilder;
 import pl.dawydiuk.Foundry.consumer.*;
+import pl.dawydiuk.Foundry.predicate.MassPredicate;
 import pl.dawydiuk.Foundry.repository.MassDao;
 import pl.dawydiuk.Foundry.repository.ProductDao;
 import pl.dawydiuk.Foundry.service.MassConsumer;
@@ -81,11 +82,16 @@ public class ComponentConfig {
     }
 
     @Bean
+    public MassPredicate massPredicate(){
+        return new MassPredicate();
+    }
+
+    @Bean
     public ProductProducer productProducer(OrderProducer orderProducer,
                                            ProductBuilder productBuilder,
                                            CreateProductStrategy createProductStrategy,
                                            ProductSynchronizationConsumer productSynchronizationConsumer){
-        return new ProductProducer(orderProducer,productBuilder,createProductStrategy,productSynchronizationConsumer);
+        return new ProductProducer(orderProducer,productBuilder,createProductStrategy,productSynchronizationConsumer,massPredicate());
     }
 
 }
