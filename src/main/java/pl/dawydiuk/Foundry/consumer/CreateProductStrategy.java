@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.Product;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -13,14 +12,14 @@ import java.util.function.Consumer;
 
 @AllArgsConstructor
 @Slf4j
-public class CreateProductStrategy implements Consumer<Product>{
+public class CreateProductStrategy implements Consumer<Product> {
 
-    private final List<ProductContexConsumer> consumers;
+    private final CreateProductChainBuilder createProductChainBuilder;
 
     @Override
     public void accept(Product product) {
-        for (ProductContexConsumer consumer:consumers) {
-                consumer.execute(product);
+        for (ProductContexConsumer consumer : createProductChainBuilder.buildChain()) {
+            consumer.execute(product);
         }
     }
 }

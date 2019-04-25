@@ -10,11 +10,7 @@ import pl.dawydiuk.Foundry.consumer.*;
 import pl.dawydiuk.Foundry.predicate.MassPredicate;
 import pl.dawydiuk.Foundry.repository.MassDao;
 import pl.dawydiuk.Foundry.repository.ProductDao;
-import pl.dawydiuk.Foundry.service.MassConsumer;
-import pl.dawydiuk.Foundry.service.OrderProducer;
-import pl.dawydiuk.Foundry.service.ProductProducer;
-
-import java.util.List;
+import pl.dawydiuk.Foundry.service.*;
 
 /**
  * Created by Judith on 23.03.2019.
@@ -30,8 +26,7 @@ public class ComponentConfig {
 
     @Bean
     public CreateProductChainBuilder createProductChainBuilder(CreateProductConsumer createProductConsumer,
-                                                               ProductPersistConsumer productPersistConsumer,
-                                                               ProductMassReducerConsumer productCountReducerConsumer) {
+                                                               ProductMassReducerConsumer productCountReducerConsumer, ProductPersistConsumer productPersistConsumer) {
         return new CreateProductChainBuilder(createProductConsumer, productPersistConsumer, productCountReducerConsumer);
 
     }
@@ -42,8 +37,8 @@ public class ComponentConfig {
     }
 
     @Bean
-    public CreateProductStrategy createProductStrategy(List<ProductContexConsumer> consumers) {
-        return new CreateProductStrategy(consumers);
+    public CreateProductStrategy createProductStrategy(CreateProductChainBuilder createProductChainBuilder) {
+        return new CreateProductStrategy(createProductChainBuilder);
     }
 
     @Bean
@@ -77,21 +72,32 @@ public class ComponentConfig {
     }
 
     @Bean
-    public OrderProducer orderProducer(KafkaTemplate<String, String> kafkaTemplateString){
+    public OrderProducer orderProducer(KafkaTemplate<String, String> kafkaTemplateString) {
         return new OrderProducer(kafkaTemplateString);
     }
 
     @Bean
-    public MassPredicate massPredicate(){
+    public MassPredicate massPredicate() {
         return new MassPredicate();
+    }
+
+    @Bean
+    public ProductSearcher productSearcher(ProductDao productDao){
+        return new ProductSearcher(productDao);
+    }
+
+    @Bean
+    public ProductFascade productFascade(ProductProducer productProducer,ProductSearcher productSearcher){
+        return new ProductFacadeImpl(productProducer,productSearcher);
     }
 
     @Bean
     public ProductProducer productProducer(OrderProducer orderProducer,
                                            ProductBuilder productBuilder,
                                            CreateProductStrategy createProductStrategy,
-                                           ProductSynchronizationConsumer productSynchronizationConsumer){
-        return new ProductProducer(orderProducer,productBuilder,createProductStrategy,productSynchronizationConsumer,massPredicate());
+                                           ProductSynchronizationConsumer productSynchronizationConsumer,
+                                           MassPredicate massPredicate) {
+        return new ProductProducer(orderProducer, productBuilder, createProductStrategy, massPredicate, productSynchronizationConsumer);
     }
 
 }

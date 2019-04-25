@@ -16,5 +16,6 @@ public class Go {
 //        firstFunction.compose(secondFunction).apply("YYY");
 
 
+
     }
 }
