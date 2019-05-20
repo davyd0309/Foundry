@@ -6,16 +6,14 @@ import models.CreateProductRQ;
 import models.Product;
 import models.ProductRS;
 import models.dto.ProductDto;
+import models.enums.ProductType;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dawydiuk.Foundry.builder.ProductBuilder;
 import pl.dawydiuk.Foundry.consumer.CreateProductStrategy;
 import pl.dawydiuk.Foundry.consumer.ProductSynchronizationConsumer;
-import pl.dawydiuk.Foundry.mapper.ProductDtoMapper;
 import pl.dawydiuk.Foundry.predicate.MassPredicate;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -30,49 +28,65 @@ public class ProductProducer {
 
     @Transactional
     public ProductRS createProduct(final List<CreateProductRQ> createProductRQ) {
-        final List<CreateProductRQ> productList = Optional.ofNullable(createProductRQ).orElse(new ArrayList<CreateProductRQ>());
+
         ProductRS productRS = new ProductRS();
-        if (!productList.isEmpty()) {
-            List<Product> productsToBeMade = synchronizationProductsToBeMade(productList);
-            if (isNotEnoughInStorage(productsToBeMade)) {
-                sendMessageMassAbsence();
+        if (!createProductRQ.isEmpty()) {
+            if (!isEnoughInStorage(createProductRQ)) {
+                sendMessageMassAbsence(calculationOfDemand(createProductRQ));//TODO for unit test
             } else {
-                for (int productId = 0; productId < productsToBeMade.size(); productId++) {
-                    Product newProduct = buildNewProduct();
-                    Optional.of(newProduct).ifPresent(createProductStrategy);
-                    buildResponse(productRS, newProduct);
-                }
+                production(createProductRQ, productRS);
                 return productRS;
             }
-
-        } else {
-            return productRS;
         }
         return productRS;
     }
 
-    private Product buildNewProduct() {
-        return productBuilder.createNewProduct();
+    private void production(final List<CreateProductRQ> createProductRQ, final ProductRS productRS) {
+        createProductRQ.forEach(rq -> {
+            for (int i = 0; i < rq.getNumber(); i++) {
+                Product newProduct = buildNewProduct(rq.getType());//TODO what if type is NULL
+                productionProcess(newProduct);
+                buildResponse(productRS, newProduct);
+            }
+        });
     }
 
-    private void buildResponse(ProductRS productRS, Product newProduct) {
+    private void productionProcess(final Product newProduct) {
+        createProductStrategy.accept(newProduct);
+    }
+
+    private Product buildNewProduct(final ProductType productType) {
+        return productBuilder.createNewProduct(productType);
+    }
+
+    private void buildResponse(final ProductRS productRS, final Product newProduct) {
         productRS.getProductsList().add(mapToDto(newProduct));
     }
 
-    private ProductDto mapToDto(Product product) {
-        return ProductDtoMapper.mapTo.apply(product);
+    private ProductDto mapToDto(final Product product) {
+            ProductDto productDto = new ProductDto();
+            productDto.setType(product.getName());
+            productDto.setId(product.getId());
+            return productDto;
     }
 
-    private boolean isNotEnoughInStorage(final List<Product> productsToBeMade) {
-        return massPredicate.test(productsToBeMade);
+    private boolean isEnoughInStorage(final List<CreateProductRQ> createProductRQ) {
+        return massPredicate.test(createProductRQ);
     }
 
 
-    private void sendMessageMassAbsence() {
-        orderProducer.accept("Not enough mass");
+    private void sendMessageMassAbsence(final Double calculationOfDemand) {
+        orderProducer.accept(calculationOfDemand);
     }
 
     private List<Product> synchronizationProductsToBeMade(final List<CreateProductRQ> createProductRQ) {
         return productSynchronizationConsumer.apply(createProductRQ);
+    }
+
+    private double calculationOfDemand(final List<CreateProductRQ> createProductRQS) {
+        return createProductRQS.stream()
+                .map(CreateProductRQ::getType)
+                .mapToDouble(ProductType::getAmountOfMass)
+                .sum();
     }
 }

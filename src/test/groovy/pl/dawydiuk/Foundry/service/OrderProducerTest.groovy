@@ -4,11 +4,11 @@ import org.springframework.kafka.core.KafkaTemplate
 import spock.lang.Specification
 
 /**
- * Created by Judith on 26.03.2019.
+ * Created by Konrad on 26.03.2019.
  */
 class OrderProducerTest extends Specification {
 
-    private OrderProducer orderProducer;
+    private OrderProducer orderProducer
     private KafkaTemplate<String, String> kafkaTemplateString
 
     void setup() {
@@ -16,16 +16,26 @@ class OrderProducerTest extends Specification {
         orderProducer = new OrderProducer(kafkaTemplateString)
     }
 
-    def "Accept_should send correct information only once"() {
+    def "Accept should send correct information only once"() {
         given:
-        String expectedInformation = "Some information"
+        Double expectedInformation = 545
+
         when:
         orderProducer.accept(expectedInformation)
+
         then:
         1 * kafkaTemplateString.send(_,expectedInformation)
     }
 
-    def "Accept_should not send if information equals null "() {
+    def "Accept should not send correct information"() {
+        given:
+        Double expectedInformation = null
 
+        when:
+        orderProducer.accept(expectedInformation)
+
+        then:
+        0 * kafkaTemplateString.send(_,expectedInformation)
     }
+
 }

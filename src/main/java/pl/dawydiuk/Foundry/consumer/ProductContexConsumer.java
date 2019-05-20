@@ -3,7 +3,7 @@ package pl.dawydiuk.Foundry.consumer;
 import java.util.function.Consumer;
 
 /**
- * Created by Judith on 17.03.2019.
+ * Created by Konrad on 17.03.2019.
  */
 public interface ProductContexConsumer<T> extends Consumer<T> {
 

@@ -12,7 +12,7 @@ import pl.dawydiuk.Foundry.service.ProductFascade;
 import java.util.List;
 
 /**
- * Created by Judith on 26.12.2018.
+ * Created by Konrad on 26.12.2018.
  */
 
 @RestController

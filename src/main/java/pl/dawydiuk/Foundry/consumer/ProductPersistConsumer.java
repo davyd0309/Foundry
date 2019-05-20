@@ -6,7 +6,7 @@ import models.Product;
 import pl.dawydiuk.Foundry.repository.ProductDao;
 
 /**
- * Created by Judith on 17.03.2019.
+ * Created by Konrad on 17.03.2019.
  */
 
 @AllArgsConstructor

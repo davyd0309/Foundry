@@ -1,26 +1,31 @@
 package pl.dawydiuk.Foundry.consumer;
 
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.CreateProductRQ;
 import models.Product;
+import pl.dawydiuk.Foundry.repository.ProductDao;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 /**
- * Created by Judith on 21.03.2019.
+ * Created by Konrad on 21.03.2019.
  */
 
-@NoArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class ProductSynchronizationConsumer implements Function<List<CreateProductRQ>, List<Product>> {
+
+    private final ProductDao productDao;
 
     @Override
     public List<Product> apply(List<CreateProductRQ> createProductRQ) {
         //uderza do bazy i sprawdza co zostalo z zapasow do zrobienia i dodaje to co trzeba zrobić
         //mapuje na liste produktow
 
-        return List.of(Product.defaultInstance(), Product.defaultInstance(), Product.defaultInstance());
+        List<Product> allProduct = productDao.getAll();
+        return Collections.emptyList();
     }
 }

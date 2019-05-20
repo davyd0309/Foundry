@@ -10,10 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import java.util.List;
 
 /**
- * Created by Judith on 25.02.2019.
+ * Created by Konrad on 25.02.2019.
  */
 
 
@@ -24,7 +23,7 @@ public class MassDao {
 
     private final SessionFactory sessionFactory;
 
-    public List<Mass> getAllMass() {
+    public Mass getAllMass() {
         CriteriaBuilder criteriaBuilder = sessionFactory.getCriteriaBuilder();
 
         CriteriaQuery<Mass> query = criteriaBuilder.createQuery(Mass.class);
@@ -32,8 +31,10 @@ public class MassDao {
         query.select(root);
 
         Query<Mass> query1 = sessionFactory.getCurrentSession().createQuery(query);
-        return query1.getResultList();
+        return query1.uniqueResult();
     }
+
+
 
 
 }

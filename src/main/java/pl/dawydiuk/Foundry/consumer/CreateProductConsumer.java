@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 
 /**
- * Created by Judith on 02.02.2019.
+ * Created by Konrad on 02.02.2019.
  */
 
 @RequiredArgsConstructor

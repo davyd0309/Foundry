@@ -1,24 +1,41 @@
 package pl.dawydiuk.Foundry.predicate;
 
 
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import models.Product;
+import models.CreateProductRQ;
+import models.Mass;
+import models.enums.ProductType;
+import pl.dawydiuk.Foundry.repository.MassDao;
 
 import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Created by Judith on 27.12.2018.
+ * Created by Konrad on 27.12.2018.
  */
 
-@NoArgsConstructor
+@AllArgsConstructor
 @Slf4j
-public class MassPredicate implements Predicate<List<Product>>{
+public class MassPredicate implements Predicate<List<CreateProductRQ>>{
+
+    private final MassDao massDao;
 
 
     @Override
-    public boolean test(List<Product> productList) {
-        return true;//sprawdza w bazie czy jest wystarczajaca ilosc masy do zrobienia produktow
+    public boolean test(final List<CreateProductRQ> createProductRQS) {
+        return calculatingTheQuantityInTheWarehouse()>=calculationOfDemand(createProductRQS);
+    }
+
+    private double calculatingTheQuantityInTheWarehouse() {
+        Mass allMass = massDao.getAllMass();
+        return allMass.getWeight();
+    }
+
+    private double calculationOfDemand(final List<CreateProductRQ> createProductRQS) {
+        return createProductRQS.stream()
+                .map(CreateProductRQ::getType)
+                .mapToDouble(ProductType::getAmountOfMass)
+                .sum();
     }
 }

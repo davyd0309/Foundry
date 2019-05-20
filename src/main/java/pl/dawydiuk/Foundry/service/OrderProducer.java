@@ -7,18 +7,28 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.function.Consumer;
 
+import static java.util.Optional.ofNullable;
+
 @RequiredArgsConstructor
 @Slf4j
-public class OrderProducer implements Consumer<String> {
+public class OrderProducer implements Consumer<Double> {
 
-    private final KafkaTemplate<String, String> kafkaTemplateString;
+    private final KafkaTemplate<String, Double> kafkaTemplateString;
 
     @Value("${app.topic.orders-from-foundry}")
     private String topic;
 
+
     @Override
-    public void accept(final String information) {
-        log.info("Send order to topic='{}' info='{}'", topic, information);
-        kafkaTemplateString.send(topic, information);
+    public void accept(final Double calculationOfDemand) {
+        ofNullable(calculationOfDemand)
+                .ifPresent(sendInformation(calculationOfDemand));
+    }
+
+    private Consumer<Double> sendInformation(Double calculationOfDemand) {
+        return cal -> {
+            log.info("Send order to topic='{}' info='{}'", topic, calculationOfDemand);
+            kafkaTemplateString.send(topic, calculationOfDemand);
+        };
     }
 }

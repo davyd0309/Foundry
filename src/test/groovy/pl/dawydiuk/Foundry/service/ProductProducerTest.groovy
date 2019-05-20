@@ -1,24 +1,31 @@
 package pl.dawydiuk.Foundry.service
 
+import models.CreateProductRQ
 import models.Product
+import models.ProductRS
+import models.enums.ProductType
 import pl.dawydiuk.Foundry.builder.ProductBuilder
 import pl.dawydiuk.Foundry.consumer.CreateProductStrategy
 import pl.dawydiuk.Foundry.consumer.ProductSynchronizationConsumer
 import pl.dawydiuk.Foundry.predicate.MassPredicate
 import spock.lang.Specification
 
+import java.time.LocalDateTime
+
+import static org.mockito.ArgumentMatchers.any
+
 /**
- * Created by Judith on 24.03.2019.
+ * Created by Konrad on 24.03.2019.
  */
 class ProductProducerTest extends Specification {
 
-    private OrderProducer orderProducer;
-    private ProductBuilder productBuilder;
-    private CreateProductStrategy createProductStrategy;
-    private ProductSynchronizationConsumer productSynchronizationConsumer;
-    private MassPredicate massPredicate;
+    private OrderProducer orderProducer
+    private ProductBuilder productBuilder
+    private CreateProductStrategy createProductStrategy
+    private ProductSynchronizationConsumer productSynchronizationConsumer
+    private MassPredicate massPredicate
 
-    private ProductProducer productProducer;
+    private ProductProducer productProducer
 
     void setup() {
         orderProducer = Mock()
@@ -26,73 +33,153 @@ class ProductProducerTest extends Specification {
         createProductStrategy = Mock()
         productSynchronizationConsumer = Mock()
         massPredicate = Mock()
-        productProducer = new ProductProducer(orderProducer, productBuilder,
-                createProductStrategy, productSynchronizationConsumer, massPredicate)
+        productProducer = new ProductProducer(orderProducer, productBuilder, createProductStrategy, massPredicate, productSynchronizationConsumer)
     }
 
-    def "CreateProduct_should invoke synchronization only once with correct parameter"() {
+    def "createProduct should invoke mass test if rq is not empty"() {
         given:
-        List<Product> productList = Arrays.asList(Product.defaultInstance(), Product.defaultInstance(), Product.defaultInstance())
+        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .number(10)
+                .build())
+        productBuilder.createNewProduct(ProductType.COMPACT_BOWL) >> Product.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .foundryDate(LocalDateTime.now())
+                .build()
         when:
-        productProducer.createProduct(productList)
+        productProducer.createProduct(createProductRQ)
+
         then:
-        1 * productSynchronizationConsumer.apply(productList) >> productList
-
+        1 * massPredicate.test(createProductRQ)
     }
 
-    def "CreateProduct_should invoke send message only once if is not enough mass"() {
+    def "createProduct should NOT invoke mass test if rq is empty"() {
         given:
-        massPredicate.test(_) >> true
+        List<CreateProductRQ> createProductRQ = List.of()
+        productBuilder.createNewProduct(ProductType.COMPACT_BOWL) >> Product.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .foundryDate(LocalDateTime.now())
+                .build()
         when:
-        productProducer.createProduct(_)
+        productProducer.createProduct(createProductRQ)
+
+        then:
+        0 * massPredicate.test(createProductRQ)
+    }
+
+    def "createProduct should invoke sendMessageMassAbsence if is not enough mass in storage"() {
+        given:
+        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .number(10)
+                .build())
+        productBuilder.createNewProduct(ProductType.COMPACT_BOWL) >> Product.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .foundryDate(LocalDateTime.now())
+                .build()
+        massPredicate.test(createProductRQ) >> false
+
+        when:
+        productProducer.createProduct(createProductRQ)
+
         then:
         1 * orderProducer.accept(_)
-
     }
 
-    def "CreateProduct_should NOT invoke send message if is enough mass"() {
+    def "createProduct should return empty productRS if is not enough mass in storage"() {
         given:
-        productSynchronizationConsumer.apply(_) >> Arrays.asList(Product.defaultInstance(), Product.defaultInstance(), Product.defaultInstance(),Product.defaultInstance(), Product.defaultInstance(), Product.defaultInstance())
-        massPredicate.test(_) >> false
+        ProductRS expectedProductRS = new ProductRS()
+        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .number(10)
+                .build())
+        productBuilder.createNewProduct(ProductType.COMPACT_BOWL) >> Product.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .foundryDate(LocalDateTime.now())
+                .build()
+        massPredicate.test(createProductRQ) >> false
+
         when:
-        productProducer.createProduct(_)
+        ProductRS actualProductRS = productProducer.createProduct(createProductRQ)
+
+        then:
+        actualProductRS == expectedProductRS
+    }
+
+    def "createProduct should NOT invoke sendMessageMassAbsence if is enough mass in storage"() {
+        given:
+        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .number(10)
+                .build())
+        productBuilder.createNewProduct(ProductType.COMPACT_BOWL) >> Product.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .foundryDate(LocalDateTime.now())
+                .build()
+        massPredicate.test(createProductRQ) >> true
+
+        when:
+        productProducer.createProduct(createProductRQ)
+
         then:
         0 * orderProducer.accept(_)
+
     }
 
-    def "CreateProduct_should create as many products as there is to be made"() {
+    def "createProduct should invoke production if is enough mass in storage"() {
         given:
-        List<Product> productList = Arrays.asList(Product.defaultInstance(), Product.defaultInstance(), Product.defaultInstance())
-        productSynchronizationConsumer.apply(productList) >> Arrays.asList(Product.defaultInstance(), Product.defaultInstance(), Product.defaultInstance(),Product.defaultInstance(), Product.defaultInstance(), Product.defaultInstance())
-        Product createdProduct = Product.defaultInstance()
+        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .number(10)
+                .build())
+        productBuilder.createNewProduct(ProductType.COMPACT_BOWL) >> Product.builder()
+                .type(ProductType.COMPACT_BOWL)
+                .foundryDate(LocalDateTime.now())
+                .build()
+        massPredicate.test(createProductRQ) >> true
         when:
-        productProducer.createProduct(productList)
+        productProducer.createProduct(createProductRQ)
         then:
-        6 * productBuilder.createNewProduct() >> createdProduct
-        6 * createProductStrategy.accept(createdProduct)
+        10 * productBuilder.createNewProduct(ProductType.COMPACT_BOWL)
+        10 * createProductStrategy.accept(any(Product.class))
     }
+//
+//    def "createProduct should NOT invoke production if is not enough mass in storage"() {
+//        given:
+//
+//        when:
+//
+//        then:
+//
+//    }
+//
+//    def "createProduct should productRS if everything is ok"() {
+//        given:
+//
+//        when:
+//
+//        then:
+//
+//    }
+//    def "calculationOfDemand should calculate correct"() {
+//        given:
+//
+//        when:
+//
+//        then:
+//
+//    }
 
-    def "CreateProduct_should create 0 products if products to be made equals 0"() {
-        given:
-        List<Product> productList = Collections.emptyList()
-        productSynchronizationConsumer.apply(productList) >> Collections.emptyList()
-        Product createdProduct = Product.defaultInstance()
-        when:
-        productProducer.createProduct(productList)
-        then:
-        0 * productBuilder.createNewProduct() >> createdProduct
-        0 * createProductStrategy.accept(createdProduct)
-    }
+    //    def "buildResponse should add DTO to list"() {
+//        given:
+//
+//        when:
+//
+//        then:
+//
+//    }
 
-    def "CreateProduct_should create 0 if products list equals null"() {
-        given:
-        List<Product> productList = null
-        Product createdProduct = Product.defaultInstance()
-        when:
-        productProducer.createProduct(productList)
-        then:
-        0 * productBuilder.createNewProduct() >> createdProduct
-        0 * createProductStrategy.accept(createdProduct)
-    }
+
+
 
 }

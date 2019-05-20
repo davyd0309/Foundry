@@ -1,7 +1,7 @@
 package pl.dawydiuk.Foundry.helper;
 
 /**
- * Created by Judith on 05.03.2019.
+ * Created by Konrad on 05.03.2019.
  */
 public class Go {
 
@@ -15,7 +15,10 @@ public class Go {
 //        firstFunction.andThen(secondFunction).apply("YYY");
 //        firstFunction.compose(secondFunction).apply("YYY");
 
-
-
+//        final String dada = "asdasdasd";
+//        String gggg = "dsfdssdsf";
+//        dada="dgdfgfdgfd";
+//        gggg = "dfdsgdsgdsg";
+//        System.out.println(dada);
     }
 }

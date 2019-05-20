@@ -1,22 +1,23 @@
 package pl.dawydiuk.Foundry.builder;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.Product;
+import models.enums.ProductType;
 
 import java.time.LocalDateTime;
 
 /**
- * Created by Judith on 09.03.2019.
+ * Created by Konrad on 09.03.2019.
  */
 
 
-@NoArgsConstructor
+
 @Slf4j
 public class ProductBuilder {
 
-    public Product createNewProduct() {
+    public Product createNewProduct(ProductType productType) {
         return Product.builder()
+                .type(productType)
                 .foundryDate(LocalDateTime.now())
                 .build();
     }

@@ -7,7 +7,7 @@ import models.Product;
 import static pl.dawydiuk.Foundry.storage.Storage.PRODUCTS_TO_BE_MADE;
 
 /**
- * Created by Judith on 09.03.2019.
+ * Created by Konrad on 09.03.2019.
  */
 
 @NoArgsConstructor

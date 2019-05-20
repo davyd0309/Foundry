@@ -14,7 +14,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
- * Created by Judith on 09.03.2019.
+ * Created by Konrad on 09.03.2019.
  */
 
 

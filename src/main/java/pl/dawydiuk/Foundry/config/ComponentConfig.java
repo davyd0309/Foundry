@@ -13,7 +13,7 @@ import pl.dawydiuk.Foundry.repository.ProductDao;
 import pl.dawydiuk.Foundry.service.*;
 
 /**
- * Created by Judith on 23.03.2019.
+ * Created by Konrad on 23.03.2019.
  */
 
 @Configuration
@@ -52,8 +52,8 @@ public class ComponentConfig {
     }
 
     @Bean
-    public ProductSynchronizationConsumer productSynchronizationConsumer() {
-        return new ProductSynchronizationConsumer();
+    public ProductSynchronizationConsumer productSynchronizationConsumer(ProductDao productDao) {
+        return new ProductSynchronizationConsumer(productDao);
     }
 
     @Bean
@@ -72,13 +72,13 @@ public class ComponentConfig {
     }
 
     @Bean
-    public OrderProducer orderProducer(KafkaTemplate<String, String> kafkaTemplateString) {
+    public OrderProducer orderProducer(KafkaTemplate<String, Double> kafkaTemplateString) {
         return new OrderProducer(kafkaTemplateString);
     }
 
     @Bean
-    public MassPredicate massPredicate() {
-        return new MassPredicate();
+    public MassPredicate massPredicate(MassDao massDao) {
+        return new MassPredicate(massDao);
     }
 
     @Bean

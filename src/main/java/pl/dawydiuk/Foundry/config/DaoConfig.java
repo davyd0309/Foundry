@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
- * Created by Judith on 25.02.2019.
+ * Created by Konrad on 25.02.2019.
  */
 
 @Configuration
@@ -83,8 +83,7 @@ public class DaoConfig {
         if (entityManagerFactory.unwrap(SessionFactory.class) == null) {
             throw new NullPointerException("factory is not a hibernate factory");
         }
-        SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
-        return sessionFactory;
+        return entityManagerFactory.unwrap(SessionFactory.class);
     }
 
     @Bean
