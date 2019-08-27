@@ -27,19 +27,19 @@ import java.util.Properties;
 @Slf4j
 public class DaoConfig {
 
-    @Value("${datasource.driver-class-name}")
+    @Value("${datasource.driver-class-name:class}")
     private String DRIVER_CLASS;
 
-    @Value("${datasource.url}")
+    @Value("${datasource.url:url}")
     private String DATEBASE_URL;
 
-    @Value("${datasource.username}")
+    @Value("${datasource.username:username}")
     private String USER_NAME;
 
-    @Value("${datasource.password}")
+    @Value("${datasource.password:password}")
     private String USER_PASSWORD;
 
-    @Value("${hibernate.dialect}")
+    @Value("${hibernate.dialect:dialect}")
     private  String DIALECT;
 
 

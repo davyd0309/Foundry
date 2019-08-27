@@ -1,6 +1,6 @@
 package pl.dawydiuk.Foundry.predicate
 
-import models.CreateProductRQ
+import models.ProductRQ
 import models.Mass
 import models.enums.ProductType
 import pl.dawydiuk.Foundry.repository.MassDao
@@ -21,7 +21,7 @@ class MassPredicateTest extends Specification {
 
     def "Test should return true if there is enough mass"() {
         given:
-        List<CreateProductRQ> productsToBeMade = prepareCreateProductRQList()
+        List<ProductRQ> productsToBeMade = prepareCreateProductRQList()
         massDao.getAllMass() >> Mass.builder().weight(515.88).build()
 
         when:
@@ -33,7 +33,7 @@ class MassPredicateTest extends Specification {
 
     def "Test should return false if there is not enough mass"() {
         given:
-        List<CreateProductRQ> productsToBeMade = prepareCreateProductRQList()
+        List<ProductRQ> productsToBeMade = prepareCreateProductRQList()
         massDao.getAllMass() >> Mass.builder().weight(10).build()
 
         when:
@@ -45,7 +45,7 @@ class MassPredicateTest extends Specification {
 
     def "Test should return true if the values are the same"() {
         given:
-        List<CreateProductRQ> productsToBeMade = prepareCreateProductRQList()
+        List<ProductRQ> productsToBeMade = prepareCreateProductRQList()
         massDao.getAllMass() >> Mass.builder().weight(498).build()
 
         when:
@@ -55,10 +55,10 @@ class MassPredicateTest extends Specification {
         status
     }
 
-    private List<CreateProductRQ> prepareCreateProductRQList(){
-        return List.of(CreateProductRQ.builder().type(ProductType.COMPACT_BOWL).build(),
-                CreateProductRQ.builder().type(ProductType.URINAL).build(),
-                CreateProductRQ.builder().type(ProductType.COMPACT_BOWL).build())
+    private List<ProductRQ> prepareCreateProductRQList(){
+        return List.of(ProductRQ.builder().type(ProductType.COMPACT_BOWL).build(),
+                ProductRQ.builder().type(ProductType.URINAL).build(),
+                ProductRQ.builder().type(ProductType.COMPACT_BOWL).build())
     }
 
 }

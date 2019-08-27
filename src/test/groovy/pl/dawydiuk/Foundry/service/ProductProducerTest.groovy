@@ -1,6 +1,6 @@
 package pl.dawydiuk.Foundry.service
 
-import models.CreateProductRQ
+import models.ProductRQ
 import models.Product
 import models.ProductRS
 import models.enums.ProductType
@@ -38,7 +38,7 @@ class ProductProducerTest extends Specification {
 
     def "createProduct should invoke mass test if rq is not empty"() {
         given:
-        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+        List<ProductRQ> createProductRQ = List.of(ProductRQ.builder()
                 .type(ProductType.COMPACT_BOWL)
                 .number(10)
                 .build())
@@ -55,7 +55,7 @@ class ProductProducerTest extends Specification {
 
     def "createProduct should NOT invoke mass test if rq is empty"() {
         given:
-        List<CreateProductRQ> createProductRQ = List.of()
+        List<ProductRQ> createProductRQ = List.of()
         productBuilder.createNewProduct(ProductType.COMPACT_BOWL) >> Product.builder()
                 .type(ProductType.COMPACT_BOWL)
                 .foundryDate(LocalDateTime.now())
@@ -69,7 +69,7 @@ class ProductProducerTest extends Specification {
 
     def "createProduct should invoke sendMessageMassAbsence if is not enough mass in storage"() {
         given:
-        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+        List<ProductRQ> createProductRQ = List.of(ProductRQ.builder()
                 .type(ProductType.COMPACT_BOWL)
                 .number(10)
                 .build())
@@ -89,7 +89,7 @@ class ProductProducerTest extends Specification {
     def "createProduct should return empty productRS if is not enough mass in storage"() {
         given:
         ProductRS expectedProductRS = new ProductRS()
-        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+        List<ProductRQ> createProductRQ = List.of(ProductRQ.builder()
                 .type(ProductType.COMPACT_BOWL)
                 .number(10)
                 .build())
@@ -108,7 +108,7 @@ class ProductProducerTest extends Specification {
 
     def "createProduct should NOT invoke sendMessageMassAbsence if is enough mass in storage"() {
         given:
-        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+        List<ProductRQ> createProductRQ = List.of(ProductRQ.builder()
                 .type(ProductType.COMPACT_BOWL)
                 .number(10)
                 .build())
@@ -128,7 +128,7 @@ class ProductProducerTest extends Specification {
 
     def "createProduct should invoke production if is enough mass in storage"() {
         given:
-        List<CreateProductRQ> createProductRQ = List.of(CreateProductRQ.builder()
+        List<ProductRQ> createProductRQ = List.of(ProductRQ.builder()
                 .type(ProductType.COMPACT_BOWL)
                 .number(10)
                 .build())

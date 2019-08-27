@@ -2,8 +2,8 @@ package pl.dawydiuk.Foundry.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import models.CreateProductRQ;
 import models.Product;
+import models.ProductRQ;
 import models.ProductRS;
 import models.dto.ProductDto;
 import models.enums.ProductType;
@@ -27,22 +27,22 @@ public class ProductProducer {
     private final ProductSynchronizationConsumer productSynchronizationConsumer;
 
     @Transactional
-    public ProductRS createProduct(final List<CreateProductRQ> createProductRQ) {
+    public ProductRS createProduct(final List<ProductRQ> productRQ) {
 
         ProductRS productRS = new ProductRS();
-        if (!createProductRQ.isEmpty()) {
-            if (!isEnoughInStorage(createProductRQ)) {
-                sendMessageMassAbsence(calculationOfDemand(createProductRQ));//TODO for unit test
+        if (!productRQ.isEmpty()) {
+            if (!isEnoughInStorage(productRQ)) {
+                sendMessageMassAbsence(calculationOfDemand(productRQ));//TODO for unit test
             } else {
-                production(createProductRQ, productRS);
+                production(productRQ, productRS);
                 return productRS;
             }
         }
         return productRS;
     }
 
-    private void production(final List<CreateProductRQ> createProductRQ, final ProductRS productRS) {
-        createProductRQ.forEach(rq -> {
+    private void production(final List<ProductRQ> productRQ, final ProductRS productRS) {
+        productRQ.forEach(rq -> {
             for (int i = 0; i < rq.getNumber(); i++) {
                 Product newProduct = buildNewProduct(rq.getType());//TODO what if type is NULL
                 productionProcess(newProduct);
@@ -70,8 +70,8 @@ public class ProductProducer {
             return productDto;
     }
 
-    private boolean isEnoughInStorage(final List<CreateProductRQ> createProductRQ) {
-        return massPredicate.test(createProductRQ);
+    private boolean isEnoughInStorage(final List<ProductRQ> productRQ) {
+        return massPredicate.test(productRQ);
     }
 
 
@@ -79,13 +79,13 @@ public class ProductProducer {
         orderProducer.accept(calculationOfDemand);
     }
 
-    private List<Product> synchronizationProductsToBeMade(final List<CreateProductRQ> createProductRQ) {
-        return productSynchronizationConsumer.apply(createProductRQ);
+    private List<Product> synchronizationProductsToBeMade(final List<ProductRQ> productRQ) {
+        return productSynchronizationConsumer.apply(productRQ);
     }
 
-    private double calculationOfDemand(final List<CreateProductRQ> createProductRQS) {
-        return createProductRQS.stream()
-                .map(CreateProductRQ::getType)
+    private double calculationOfDemand(final List<ProductRQ> productRQS) {
+        return productRQS.stream()
+                .map(ProductRQ::getType)
                 .mapToDouble(ProductType::getAmountOfMass)
                 .sum();
     }
