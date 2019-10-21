@@ -2,10 +2,8 @@ package pl.dawydiuk.Foundry.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import models.ProductRQ;
+import models.ProductCreateRQ;
 import models.ProductRS;
-
-import java.util.List;
 
 @AllArgsConstructor
 @Slf4j
@@ -15,8 +13,8 @@ public class ProductFacadeImpl implements ProductFascade{
     private  ProductSearcher productSearcher;
 
     @Override
-    public ProductRS createProduct(List<ProductRQ> productRQ) {
-        return productProducer.createProduct(productRQ);
+    public ProductRS createProduct(ProductCreateRQ productCreateRQ) {
+        return productProducer.createProduct(productCreateRQ);
     }
 
     @Override

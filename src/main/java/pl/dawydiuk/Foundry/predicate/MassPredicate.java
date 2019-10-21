@@ -3,12 +3,12 @@ package pl.dawydiuk.Foundry.predicate;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import models.AddProduct;
 import models.Mass;
-import models.ProductRQ;
+import models.ProductCreateRQ;
 import models.enums.ProductType;
 import pl.dawydiuk.Foundry.repository.MassDao;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -17,14 +17,14 @@ import java.util.function.Predicate;
 
 @AllArgsConstructor
 @Slf4j
-public class MassPredicate implements Predicate<List<ProductRQ>>{
+public class MassPredicate implements Predicate<ProductCreateRQ>{
 
     private final MassDao massDao;
 
 
     @Override
-    public boolean test(final List<ProductRQ> productRQS) {
-        return calculatingTheQuantityInTheWarehouse()>=calculationOfDemand(productRQS);
+    public boolean test(final ProductCreateRQ productCreateRQ) {
+        return calculatingTheQuantityInTheWarehouse()>=calculationOfDemand(productCreateRQ);
     }
 
     private double calculatingTheQuantityInTheWarehouse() {
@@ -32,9 +32,9 @@ public class MassPredicate implements Predicate<List<ProductRQ>>{
         return allMass.getWeight();
     }
 
-    private double calculationOfDemand(final List<ProductRQ> productRQS) {
-        return productRQS.stream()
-                .map(ProductRQ::getType)
+    private double calculationOfDemand(ProductCreateRQ productCreateRQ) {
+        return productCreateRQ.getProductList().stream()
+                .map(AddProduct::getType)
                 .mapToDouble(ProductType::getAmountOfMass)
                 .sum();
     }

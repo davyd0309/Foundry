@@ -1,13 +1,11 @@
 package pl.dawydiuk.Foundry.service;
 
-import models.ProductRQ;
+import models.ProductCreateRQ;
 import models.ProductRS;
-
-import java.util.List;
 
 
 public interface ProductFascade {
 
-    ProductRS createProduct(final List<ProductRQ> productRQ);
+    ProductRS createProduct(ProductCreateRQ productCreateRQ);
     ProductRS getAllProducts();
 }

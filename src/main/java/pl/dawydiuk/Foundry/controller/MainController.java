@@ -2,7 +2,7 @@ package pl.dawydiuk.Foundry.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import models.ProductRQ;
+import models.ProductCreateRQ;
 import models.ProductRS;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,9 +21,8 @@ public class MainController {
     private final ProductFascade productFascade;
 
     @PostMapping(value = "/create")
-    public ProductRS createNewProducts(@RequestBody ProductRQ productRQ) {
-//        ProductRS productRS = productFascade.createProduct(productRQ);
-        return new ProductRS();
+    public ProductRS createNewProducts(@RequestBody ProductCreateRQ productCreateRQ) {
+        return productFascade.createProduct(productCreateRQ);
     }
 
     @PostMapping(value = "/products")

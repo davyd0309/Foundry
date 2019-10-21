@@ -3,7 +3,7 @@ package pl.dawydiuk.Foundry.consumer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.Product;
-import models.ProductRQ;
+import models.ProductCreateRQ;
 import pl.dawydiuk.Foundry.repository.ProductDao;
 
 import java.util.Collections;
@@ -16,12 +16,12 @@ import java.util.function.Function;
 
 @AllArgsConstructor
 @Slf4j
-public class ProductSynchronizationConsumer implements Function<List<ProductRQ>, List<Product>> {
+public class ProductSynchronizationConsumer implements Function<ProductCreateRQ, List<Product>> {
 
     private final ProductDao productDao;
 
     @Override
-    public List<Product> apply(List<ProductRQ> productRQ) {
+    public List<Product> apply(ProductCreateRQ productCreateRQ) {
         //uderza do bazy i sprawdza co zostalo z zapasow do zrobienia i dodaje to co trzeba zrobić
         //mapuje na liste produktow
 
