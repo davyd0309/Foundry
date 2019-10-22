@@ -4,6 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
+//@EntityScan(
+//        basePackages = {"models"}
+//)
 public class FoundryApplication
 //		implements CommandLineRunner
 {
@@ -15,9 +18,9 @@ public class FoundryApplication
 //		this.productProducer = productProducer;
 //	}
 
-	public static void main(String[] args) {
-		SpringApplication.run(FoundryApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FoundryApplication.class, args);
+    }
 
 //	@Override
 //	public void run(String... strings) throws Exception {

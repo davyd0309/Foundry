@@ -1,28 +1,33 @@
 package pl.dawydiuk.Foundry.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import models.ProductCreateRQ;
+import models.ProductRS;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.dawydiuk.Foundry.service.ProductProducer;
+import pl.dawydiuk.Foundry.service.ProductFascade;
 
 /**
- * Created by Judith on 26.12.2018.
+ * Created by Konrad on 26.12.2018.
  */
 
 @RestController
+@AllArgsConstructor
+@Slf4j
 public class MainController {
 
-    private ProductProducer productProducer;
+    private final ProductFascade productFascade;
 
-    @Autowired
-    public MainController(ProductProducer productProducer) {
-        this.productProducer = productProducer;
+    @PostMapping(value = "/create")
+    public ProductRS createNewProducts(@RequestBody ProductCreateRQ productCreateRQ) {
+        return productFascade.createProduct(productCreateRQ);
     }
 
-    @GetMapping(value = "/start/{products}")
-    public void production(@PathVariable int howManyProducts) {
-        productProducer.createProduct(howManyProducts);
+    @PostMapping(value = "/products")
+    public void getAllProducts() {
+        ProductRS productRS = productFascade.getAllProducts();
     }
 
 }
