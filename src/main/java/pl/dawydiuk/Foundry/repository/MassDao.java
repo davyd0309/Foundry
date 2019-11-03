@@ -1,6 +1,5 @@
 package pl.dawydiuk.Foundry.repository;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.Mass;
 import org.hibernate.SessionFactory;
@@ -16,12 +15,15 @@ import javax.persistence.criteria.Root;
  */
 
 
-@AllArgsConstructor
 @Transactional
 @Slf4j
 public class MassDao {
 
     private final SessionFactory sessionFactory;
+
+    public MassDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public Mass getAllMass() {
         CriteriaBuilder criteriaBuilder = sessionFactory.getCriteriaBuilder();

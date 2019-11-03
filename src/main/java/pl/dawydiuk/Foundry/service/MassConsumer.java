@@ -15,7 +15,7 @@ public class MassConsumer {
 
     @KafkaListener(topics = MASS_FROM_CONVERSION_OF_MASS_TOPIC)
     public void getMass(@Payload Mass mass) {
-        log.info("Received mass from topic='{}' massId ='{}'", MASS_FROM_CONVERSION_OF_MASS_TOPIC, mass.getId());
+//        log.info("Received mass from topic='{}' massId ='{}'", MASS_FROM_CONVERSION_OF_MASS_TOPIC, mass.getId());
         //zapis masy ktora przychodzi do bazy
     }
 
