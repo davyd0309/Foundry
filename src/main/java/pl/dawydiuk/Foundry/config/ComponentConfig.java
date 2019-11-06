@@ -12,6 +12,10 @@ import pl.dawydiuk.Foundry.repository.MassDao;
 import pl.dawydiuk.Foundry.repository.ProductDao;
 import pl.dawydiuk.Foundry.service.*;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  * Created by Konrad on 23.03.2019.
  */
@@ -25,34 +29,34 @@ public class ComponentConfig {
     }
 
     @Bean
-    public CreateProductChainBuilder createProductChainBuilder(CreateProductConsumer createProductConsumer,
-                                                               ProductMassReducerConsumer productCountReducerConsumer, ProductPersistConsumer productPersistConsumer) {
-        return new CreateProductChainBuilder(createProductConsumer, productPersistConsumer, productCountReducerConsumer);
+    public CreateProductChainBuilder createProductChainBuilder(ProductContexConsumer createProductConsumer,
+                                                               ProductContexConsumer productMassReducerConsumer, ProductContexConsumer productPersistConsumer) {
+        return new CreateProductChainBuilder(createProductConsumer, productPersistConsumer, productMassReducerConsumer);
 
     }
 
     @Bean
-    public CreateProductConsumer createProductConsumer(KafkaTemplate<String, Product> kafkaTemplateProduct) {
+    public ProductContexConsumer createProductConsumer(KafkaTemplate<String, Product> kafkaTemplateProduct) {
         return new CreateProductConsumer(kafkaTemplateProduct);
     }
 
     @Bean
-    public CreateProductStrategy createProductStrategy(CreateProductChainBuilder createProductChainBuilder) {
+    public Consumer createProductStrategy(CreateProductChainBuilder createProductChainBuilder) {
         return new CreateProductStrategy(createProductChainBuilder);
     }
 
     @Bean
-    public ProductMassReducerConsumer productMassReducerConsumer() {
+    public ProductContexConsumer productMassReducerConsumer() {
         return new ProductMassReducerConsumer();
     }
 
     @Bean
-    public ProductPersistConsumer productPersistConsumer(ProductDao productDao) {
+    public ProductContexConsumer productPersistConsumer(ProductDao productDao) {
         return new ProductPersistConsumer(productDao);
     }
 
     @Bean
-    public ProductSynchronizationConsumer productSynchronizationConsumer(ProductDao productDao) {
+    public Function productSynchronizationConsumer(ProductDao productDao) {
         return new ProductSynchronizationConsumer(productDao);
     }
 
@@ -72,12 +76,12 @@ public class ComponentConfig {
     }
 
     @Bean
-    public OrderProducer orderProducer(KafkaTemplate<String, Double> kafkaTemplateString) {
+    public Consumer orderProducer(KafkaTemplate<String, Double> kafkaTemplateString) {
         return new OrderProducer(kafkaTemplateString);
     }
 
     @Bean
-    public MassPredicate massPredicate(MassDao massDao) {
+    public Predicate massPredicate(MassDao massDao) {
         return new MassPredicate(massDao);
     }
 
@@ -92,11 +96,11 @@ public class ComponentConfig {
     }
 
     @Bean
-    public ProductProducer productProducer(OrderProducer orderProducer,
+    public ProductProducer productProducer(Consumer orderProducer,
                                            ProductBuilder productBuilder,
-                                           CreateProductStrategy createProductStrategy,
-                                           ProductSynchronizationConsumer productSynchronizationConsumer,
-                                           MassPredicate massPredicate) {
+                                           Consumer createProductStrategy,
+                                           Function productSynchronizationConsumer,
+                                           Predicate massPredicate) {
         return new ProductProducer(orderProducer, productBuilder, createProductStrategy, massPredicate, productSynchronizationConsumer);
     }
 

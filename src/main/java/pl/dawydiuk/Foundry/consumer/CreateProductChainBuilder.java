@@ -1,29 +1,27 @@
 package pl.dawydiuk.Foundry.consumer;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Konrad on 17.03.2019.
  */
 
-
-@AllArgsConstructor
 @Slf4j
 public class CreateProductChainBuilder {
 
-    private final CreateProductConsumer createProductConsumer;
-    private final ProductPersistConsumer productPersistConsumer;
-    private final ProductMassReducerConsumer productCountReducerConsumer;
+    private final ProductContexConsumer createProductConsumer;
+    private final ProductContexConsumer productPersistConsumer;
+    private final ProductContexConsumer productMassReducerConsumer;
+
+    public CreateProductChainBuilder(ProductContexConsumer createProductConsumer, ProductContexConsumer productPersistConsumer, ProductContexConsumer productMassReducerConsumer) {
+        this.createProductConsumer = createProductConsumer;
+        this.productPersistConsumer = productPersistConsumer;
+        this.productMassReducerConsumer = productMassReducerConsumer;
+    }
 
     public List<ProductContexConsumer> buildChain() {
-        ArrayList<ProductContexConsumer> productContexConsumers = new ArrayList<>();
-        productContexConsumers.add(createProductConsumer);
-        productContexConsumers.add(productPersistConsumer);
-        productContexConsumers.add(productCountReducerConsumer);
-        return productContexConsumers;
+        return List.of(createProductConsumer, productPersistConsumer, productMassReducerConsumer);
     }
 }

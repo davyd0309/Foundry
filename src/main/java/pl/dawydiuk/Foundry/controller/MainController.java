@@ -1,6 +1,5 @@
 package pl.dawydiuk.Foundry.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.ProductCreateRQ;
 import models.ProductRS;
@@ -14,11 +13,15 @@ import pl.dawydiuk.Foundry.service.ProductFascade;
  */
 
 @RestController
-@AllArgsConstructor
 @Slf4j
 public class MainController {
 
     private final ProductFascade productFascade;
+
+
+    public MainController(ProductFascade productFascade) {
+        this.productFascade = productFascade;
+    }
 
     @PostMapping(value = "/create")
     public ProductRS createNewProducts(@RequestBody ProductCreateRQ productCreateRQ) {

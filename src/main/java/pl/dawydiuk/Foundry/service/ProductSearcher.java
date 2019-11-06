@@ -1,18 +1,20 @@
 package pl.dawydiuk.Foundry.service;
 
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.Product;
 import models.ProductRS;
 import models.dto.ProductDto;
 import pl.dawydiuk.Foundry.repository.ProductDao;
 
-@AllArgsConstructor
 @Slf4j
 public class ProductSearcher {
 
     private ProductDao productDao;
+
+    public ProductSearcher(ProductDao productDao) {
+        this.productDao = productDao;
+    }
 
     public ProductRS getAllProducts() {
         ProductRS productRS = new ProductRS();

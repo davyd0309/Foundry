@@ -1,6 +1,5 @@
 package pl.dawydiuk.Foundry.repository;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.Product;
 import org.hibernate.Session;
@@ -17,13 +16,15 @@ import java.util.List;
  * Created by Konrad on 09.03.2019.
  */
 
-
-@AllArgsConstructor
 @Transactional
 @Slf4j
 public class ProductDao {
 
     private final SessionFactory sessionFactory;
+
+    public ProductDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public void persist(final Product product) {
         sessionFactory.getCurrentSession().persist(product);

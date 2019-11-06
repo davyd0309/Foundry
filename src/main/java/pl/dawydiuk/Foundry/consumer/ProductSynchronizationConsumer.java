@@ -1,6 +1,5 @@
 package pl.dawydiuk.Foundry.consumer;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.Product;
 import models.ProductCreateRQ;
@@ -14,11 +13,15 @@ import java.util.function.Function;
  * Created by Konrad on 21.03.2019.
  */
 
-@AllArgsConstructor
+
 @Slf4j
 public class ProductSynchronizationConsumer implements Function<ProductCreateRQ, List<Product>> {
 
     private final ProductDao productDao;
+
+    public ProductSynchronizationConsumer(ProductDao productDao) {
+        this.productDao = productDao;
+    }
 
     @Override
     public List<Product> apply(ProductCreateRQ productCreateRQ) {

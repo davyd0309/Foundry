@@ -1,7 +1,6 @@
 package pl.dawydiuk.Foundry.predicate;
 
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.AddProduct;
 import models.Mass;
@@ -15,12 +14,14 @@ import java.util.function.Predicate;
  * Created by Konrad on 27.12.2018.
  */
 
-@AllArgsConstructor
 @Slf4j
 public class MassPredicate implements Predicate<ProductCreateRQ>{
 
     private final MassDao massDao;
 
+    public MassPredicate(MassDao massDao) {
+        this.massDao = massDao;
+    }
 
     @Override
     public boolean test(final ProductCreateRQ productCreateRQ) {

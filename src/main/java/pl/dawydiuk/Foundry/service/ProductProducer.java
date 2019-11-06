@@ -1,6 +1,5 @@
 package pl.dawydiuk.Foundry.service;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import models.AddProduct;
 import models.Product;
@@ -10,22 +9,27 @@ import models.dto.ProductDto;
 import models.enums.ProductType;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dawydiuk.Foundry.builder.ProductBuilder;
-import pl.dawydiuk.Foundry.consumer.CreateProductStrategy;
-import pl.dawydiuk.Foundry.consumer.ProductSynchronizationConsumer;
-import pl.dawydiuk.Foundry.predicate.MassPredicate;
 
-import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-
-@AllArgsConstructor
 @Slf4j
 public class ProductProducer {
 
-    private final OrderProducer orderProducer;
+    private final Consumer orderProducer;
     private final ProductBuilder productBuilder;
-    private final CreateProductStrategy createProductStrategy;
-    private final MassPredicate massPredicate;
-    private final ProductSynchronizationConsumer productSynchronizationConsumer;
+    private final Consumer createProductStrategy;
+    private final Predicate massPredicate;
+    private final Function productSynchronizationConsumer;
+
+    public ProductProducer(Consumer orderProducer, ProductBuilder productBuilder, Consumer createProductStrategy, Predicate massPredicate, Function productSynchronizationConsumer) {
+        this.orderProducer = orderProducer;
+        this.productBuilder = productBuilder;
+        this.createProductStrategy = createProductStrategy;
+        this.massPredicate = massPredicate;
+        this.productSynchronizationConsumer = productSynchronizationConsumer;
+    }
 
     @Transactional
     public ProductRS createProduct(final ProductCreateRQ productCreateRQ) {
@@ -80,9 +84,9 @@ public class ProductProducer {
         orderProducer.accept(calculationOfDemand);
     }
 
-    private List<Product> synchronizationProductsToBeMade(ProductCreateRQ productCreateRQ) {
-        return productSynchronizationConsumer.apply(productCreateRQ);
-    }
+//    private List<Product> synchronizationProductsToBeMade(ProductCreateRQ productCreateRQ) {
+//        return productSynchronizationConsumer.apply(productCreateRQ);
+//    }
 
     private double calculationOfDemand(ProductCreateRQ productCreateRQ) {
         return productCreateRQ.getProductList().stream()
