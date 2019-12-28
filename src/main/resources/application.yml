@@ -8,6 +8,8 @@ spring:
         protocol: SASL_SSL
     sasl:
       mechanism: SCRAM-SHA-256
+  liquibase:
+    change-log: classpath:/liquibase/dbchangelog.xml
 
 app:
   topic:
@@ -26,7 +28,7 @@ debug: false
 
 ---
 spring:
-  profiles: h2
+  profiles: test
   h2:
     console:
       enabled: true
@@ -35,13 +37,16 @@ spring:
 datebase: H2
 
 datasource:
-  url: jdbc:h2:mem:dev;DB_CLOSE_ON_EXIT=FALSE
+  url: jdbc:h2:~/dbTest
   username: konrad
   password:
   driver-class-name: org.h2.Driver
 
 hibernate:
   dialect: org.hibernate.dialect.H2Dialect
+
+kafka:
+  listen: false
 
 ---
 spring:

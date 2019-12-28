@@ -22,6 +22,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
     compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.7.Final'
+    compile group: 'org.liquibase', name: 'liquibase-core', version: '3.8.4'
     runtime 'mysql:mysql-connector-java:8.0.13'
     testCompile 'org.springframework.boot:spring-boot-starter-test:2.1.0.RELEASE'
     testCompile 'org.springframework.kafka:spring-kafka-test:2.2.0.RELEASE'

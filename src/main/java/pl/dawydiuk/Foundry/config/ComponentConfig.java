@@ -76,8 +76,8 @@ public class ComponentConfig {
     }
 
     @Bean
-    public Consumer orderProducer(KafkaTemplate<String, Double> kafkaTemplateString) {
-        return new OrderProducer(kafkaTemplateString);
+    public Consumer orderProducer(KafkaTemplate<String, Double> kafkaTemplateDouble) {
+        return new OrderProducer(kafkaTemplateDouble);
     }
 
     @Bean
