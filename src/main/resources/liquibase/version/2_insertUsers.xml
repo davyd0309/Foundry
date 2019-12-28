@@ -1,0 +1,19 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.7"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.7
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.7.xsd">
+
+    <changeSet id="2" author="konrad">
+        <insert tableName="users">
+            <column name="login" value="davyd"/>
+            <column name="password" value="konrad"/>
+            <column name="email" value="davyd@wp.pl"/>
+        </insert>
+        <insert tableName="users">
+            <column name="login" value="konrad"/>
+            <column name="password" value="davyd"/>
+            <column name="email" value="konrad@wp.pl"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
